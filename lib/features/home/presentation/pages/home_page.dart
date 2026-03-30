@@ -29,7 +29,7 @@ class _HomePageState extends State<HomePage> {
               // Use Sidebar as a Drawer on mobile
               drawer: isMobile ? SizedBox(
                 width: 280.w,
-                child: const SidebarWidget(),
+                child: const SidebarWidget(isMobile: true),
               ) : null,
               body: Row(
                 children: [
@@ -37,13 +37,13 @@ class _HomePageState extends State<HomePage> {
                   if (!isMobile)
                     AnimatedContainer(
                       duration: const Duration(milliseconds: 300),
-                      width: navProvider.isSidebarVisible ? 280.w : 0.0,
+                      width: navProvider.isSidebarVisible ? 280.0 : 0.0,
                       child: const ClipRect(
                         child: OverflowBox(
-                          minWidth: 280,
-                          maxWidth: 280,
+                          minWidth: 280.0,
+                          maxWidth: 280.0,
                           alignment: Alignment.centerLeft,
-                          child: SidebarWidget(),
+                          child: SidebarWidget(isMobile: false),
                         ),
                       ),
                     ),

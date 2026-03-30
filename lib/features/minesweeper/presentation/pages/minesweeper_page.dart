@@ -57,6 +57,12 @@ class _MinesweeperPageState extends State<MinesweeperPage> {
 
   @override
   Widget build(BuildContext context) {
+    final isMobile = widget.isMobile;
+    double scaleW(double val) => isMobile ? val.w : val;
+    double scaleH(double val) => isMobile ? val.h : val;
+    double scaleSp(double val) => isMobile ? val.sp : val;
+    double scaleR(double val) => isMobile ? val.r : val;
+
     return BlocProvider(
       create: (_) => MinesweeperCubit()..initGame(),
       child: Builder(builder: (context) {
@@ -83,19 +89,19 @@ class _MinesweeperPageState extends State<MinesweeperPage> {
                   return Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text('Minesweeper', style: TextStyle(fontSize: 18.sp)),
+                      Text('Minesweeper', style: TextStyle(fontSize: scaleSp(18))),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.timer, size: 14.sp),
-                          SizedBox(width: 4.w),
-                          Text(_formatTime(state.secondsElapsed), style: TextStyle(fontSize: 12.sp)),
+                          Icon(Icons.timer, size: scaleSp(14)),
+                          SizedBox(width: scaleW(4)),
+                          Text(_formatTime(state.secondsElapsed), style: TextStyle(fontSize: scaleSp(12))),
                           if (state.bestTime != null) ...[
-                            SizedBox(width: 12.w),
-                            Icon(Icons.emoji_events, size: 14.sp, color: Colors.amber),
-                            SizedBox(width: 4.w),
+                            SizedBox(width: scaleW(12)),
+                            Icon(Icons.emoji_events, size: scaleSp(14), color: Colors.amber),
+                            SizedBox(width: scaleW(4)),
                             Text('${'best'.tr()}: ${_formatTime(state.bestTime!)}',
-                                style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.bold)),
+                                style: TextStyle(fontSize: scaleSp(12), fontWeight: FontWeight.bold)),
                           ],
                         ],
                       ),
@@ -126,20 +132,26 @@ class _MinesweeperPageState extends State<MinesweeperPage> {
             endDrawer: Drawer(
               child: SafeArea(
                 child: Padding(
-                  padding: const EdgeInsets.all(20.0),
+                  padding: EdgeInsets.all(isMobile ? 20.w : 20.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         'settings'.tr(),
-                        style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+                        style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              fontSize: scaleSp(20),
+                            ),
                       ),
-                      const SizedBox(height: 30),
+                      SizedBox(height: scaleH(30)),
                       _buildSettingItem(
                         label: 'Rows',
                         value: _tempRows,
                         min: 5,
                         max: 20,
+                        scaleW: scaleW,
+                        scaleH: scaleH,
+                        scaleSp: scaleSp,
                         onChanged: (val) {
                           setState(() {
                             _tempRows = val.toInt();
@@ -152,6 +164,9 @@ class _MinesweeperPageState extends State<MinesweeperPage> {
                         value: _tempCols,
                         min: 5,
                         max: 20,
+                        scaleW: scaleW,
+                        scaleH: scaleH,
+                        scaleSp: scaleSp,
                         onChanged: (val) {
                           setState(() {
                             _tempCols = val.toInt();
@@ -164,6 +179,9 @@ class _MinesweeperPageState extends State<MinesweeperPage> {
                         value: _tempMines,
                         min: 1,
                         max: ((_tempRows * _tempCols) * 0.5).floor(),
+                        scaleW: scaleW,
+                        scaleH: scaleH,
+                        scaleSp: scaleSp,
                         onChanged: (val) {
                           setState(() {
                             _tempMines = val.toInt();
@@ -173,7 +191,7 @@ class _MinesweeperPageState extends State<MinesweeperPage> {
                       const Spacer(),
                       SizedBox(
                         width: double.infinity,
-                        height: 50,
+                        height: scaleH(50),
                         child: ElevatedButton(
                           onPressed: () {
                             context.read<MinesweeperCubit>().initGame(
@@ -186,9 +204,10 @@ class _MinesweeperPageState extends State<MinesweeperPage> {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Theme.of(context).colorScheme.primary,
                             foregroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(scaleR(12))),
                           ),
-                          child: const Text('Save & Restart', style: TextStyle(fontWeight: FontWeight.bold)),
+                          child: Text('Save & Restart',
+                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: scaleSp(16))),
                         ),
                       ),
                     ],
@@ -198,7 +217,7 @@ class _MinesweeperPageState extends State<MinesweeperPage> {
             ),
             body: Center(
               child: Padding(
-                padding: EdgeInsets.all(12.w),
+                padding: EdgeInsets.all(scaleW(12)),
                 child: BlocBuilder<MinesweeperCubit, MinesweeperState>(
                   builder: (context, state) {
                     if (state is MinesweeperInitial || state is MinesweeperGameOver) {
@@ -210,10 +229,10 @@ class _MinesweeperPageState extends State<MinesweeperPage> {
                       return AspectRatio(
                         aspectRatio: cols / rows,
                         child: Container(
-                          padding: EdgeInsets.all(4.w),
+                          padding: EdgeInsets.all(scaleW(4)),
                           decoration: BoxDecoration(
                             color: isDark ? Theme.of(context).cardColor : Colors.grey[100],
-                            borderRadius: BorderRadius.circular(12.r),
+                            borderRadius: BorderRadius.circular(scaleR(12)),
                             border: Border.all(
                               color: isDark ? Colors.white10 : Colors.black.withValues(alpha: 0.1),
                               width: 1,
@@ -229,8 +248,8 @@ class _MinesweeperPageState extends State<MinesweeperPage> {
                             physics: const NeverScrollableScrollPhysics(),
                             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: cols,
-                              crossAxisSpacing: 2.w,
-                              mainAxisSpacing: 2.w,
+                              crossAxisSpacing: scaleW(2),
+                              mainAxisSpacing: scaleW(2),
                             ),
                             itemCount: rows * cols,
                             itemBuilder: (context, index) {
@@ -264,6 +283,9 @@ class _MinesweeperPageState extends State<MinesweeperPage> {
     required int value,
     required int min,
     required int max,
+    required Function scaleW,
+    required Function scaleH,
+    required Function scaleSp,
     required ValueChanged<double> onChanged,
   }) {
     return Column(
@@ -272,10 +294,10 @@ class _MinesweeperPageState extends State<MinesweeperPage> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(label, style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14.sp)),
+            Text(label, style: TextStyle(fontWeight: FontWeight.w600, fontSize: scaleSp(14))),
             Text(value.toString(),
                 style: TextStyle(
-                    color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold, fontSize: 14.sp)),
+                    color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold, fontSize: scaleSp(14))),
           ],
         ),
         Slider(
@@ -286,7 +308,7 @@ class _MinesweeperPageState extends State<MinesweeperPage> {
           divisions: max - min > 0 ? max - min : 1,
           onChanged: onChanged,
         ),
-        SizedBox(height: 10.h),
+        SizedBox(height: scaleH(10)),
       ],
     );
   }

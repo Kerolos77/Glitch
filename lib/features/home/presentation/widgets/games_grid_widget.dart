@@ -16,6 +16,11 @@ class GamesGridWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double scaleW(double val) => isMobile ? val.w : val;
+    double scaleH(double val) => isMobile ? val.h : val;
+    double scaleSp(double val) => isMobile ? val.sp : val;
+    double scaleR(double val) => isMobile ? val.r : val;
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -28,10 +33,10 @@ class GamesGridWidget extends StatelessWidget {
             }
           },
         ),
-        title: Text('app_name'.tr(), style: TextStyle(fontSize: 18.sp)),
+        title: Text('app_name'.tr(), style: TextStyle(fontSize: scaleSp(18))),
       ),
       body: Container(
-        padding: EdgeInsets.all(16.w),
+        padding: EdgeInsets.all(scaleW(16)),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -39,13 +44,13 @@ class GamesGridWidget extends StatelessWidget {
               child: GridView.builder(
                 itemCount: 1, // Only Minesweeper for now
                 gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                  maxCrossAxisExtent: isMobile ? 160.w : 250.w,
+                  maxCrossAxisExtent: isMobile ? 160.w : 250.0,
                   childAspectRatio: 0.75,
-                  crossAxisSpacing: 16.w,
-                  mainAxisSpacing: 16.w,
+                  crossAxisSpacing: scaleW(16),
+                  mainAxisSpacing: scaleW(16),
                 ),
                 itemBuilder: (context, index) {
-                  return _buildGameCard(context, 'Minesweeper', 'minesweeper');
+                  return _buildGameCard(context, 'Minesweeper', 'minesweeper', scaleW, scaleH, scaleSp, scaleR);
                 },
               ),
             ),
@@ -55,11 +60,11 @@ class GamesGridWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildGameCard(BuildContext context, String title, String gameId) {
+  Widget _buildGameCard(BuildContext context, String title, String gameId, Function w, Function h, Function sp, Function r) {
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(12.r),
+        borderRadius: BorderRadius.circular(r(12)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
@@ -75,12 +80,12 @@ class GamesGridWidget extends StatelessWidget {
             flex: 3,
             child: Container(
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.vertical(top: Radius.circular(12.r)),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(r(12))),
                 color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
               ),
               child: Icon(
                 Icons.grid_on,
-                size: 48.r,
+                size: r(48),
                 color: Theme.of(context).colorScheme.primary,
               ),
             ),
@@ -88,20 +93,20 @@ class GamesGridWidget extends StatelessWidget {
           Expanded(
             flex: 2,
             child: Padding(
-              padding: EdgeInsets.all(8.w),
+              padding: EdgeInsets.all(w(8)),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     title,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.sp),
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: sp(14)),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                   SizedBox(
                     width: double.infinity,
-                    height: 32.h,
+                    height: h(32),
                     child: ElevatedButton(
                       onPressed: () {
                         context.read<NavigationProvider>().selectGame(gameId);
@@ -111,10 +116,10 @@ class GamesGridWidget extends StatelessWidget {
                         foregroundColor: Colors.white,
                         padding: EdgeInsets.zero,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.r),
+                          borderRadius: BorderRadius.circular(r(8)),
                         ),
                       ),
-                      child: Text('play_now'.tr(), style: TextStyle(fontSize: 12.sp)),
+                      child: Text('play_now'.tr(), style: TextStyle(fontSize: sp(12))),
                     ),
                   ),
                 ],
