@@ -2,9 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:provider/provider.dart';
 import 'package:online_games/core/providers/navigation_provider.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class GamesGridWidget extends StatelessWidget {
-  const GamesGridWidget({super.key});
+  final bool isMobile;
+  final GlobalKey<ScaffoldState> scaffoldKey;
+
+  const GamesGridWidget({
+    super.key,
+    required this.isMobile,
+    required this.scaffoldKey,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -12,23 +20,29 @@ class GamesGridWidget extends StatelessWidget {
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.menu),
-          onPressed: () => context.read<NavigationProvider>().toggleSidebar(),
+          onPressed: () {
+            if (isMobile) {
+              scaffoldKey.currentState?.openDrawer();
+            } else {
+              context.read<NavigationProvider>().toggleSidebar();
+            }
+          },
         ),
-        title: Text('app_name'.tr()),
+        title: Text('app_name'.tr(), style: TextStyle(fontSize: 18.sp)),
       ),
       body: Container(
-        padding: const EdgeInsets.all(24.0),
+        padding: EdgeInsets.all(16.w),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
               child: GridView.builder(
                 itemCount: 1, // Only Minesweeper for now
-                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                  maxCrossAxisExtent: 250,
+                gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                  maxCrossAxisExtent: isMobile ? 160.w : 250.w,
                   childAspectRatio: 0.75,
-                  crossAxisSpacing: 20,
-                  mainAxisSpacing: 20,
+                  crossAxisSpacing: 16.w,
+                  mainAxisSpacing: 16.w,
                 ),
                 itemBuilder: (context, index) {
                   return _buildGameCard(context, 'Minesweeper', 'minesweeper');
@@ -45,7 +59,7 @@ class GamesGridWidget extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(12.r),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
@@ -61,12 +75,12 @@ class GamesGridWidget extends StatelessWidget {
             flex: 3,
             child: Container(
               decoration: BoxDecoration(
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(12.r)),
                 color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
               ),
               child: Icon(
                 Icons.grid_on,
-                size: 64,
+                size: 48.r,
                 color: Theme.of(context).colorScheme.primary,
               ),
             ),
@@ -74,19 +88,20 @@ class GamesGridWidget extends StatelessWidget {
           Expanded(
             flex: 2,
             child: Padding(
-              padding: const EdgeInsets.all(12.0),
+              padding: EdgeInsets.all(8.w),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     title,
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.sp),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                   SizedBox(
                     width: double.infinity,
+                    height: 32.h,
                     child: ElevatedButton(
                       onPressed: () {
                         context.read<NavigationProvider>().selectGame(gameId);
@@ -94,11 +109,12 @@ class GamesGridWidget extends StatelessWidget {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Theme.of(context).colorScheme.primary,
                         foregroundColor: Colors.white,
+                        padding: EdgeInsets.zero,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(8.r),
                         ),
                       ),
-                      child: Text('play_now'.tr()),
+                      child: Text('play_now'.tr(), style: TextStyle(fontSize: 12.sp)),
                     ),
                   ),
                 ],

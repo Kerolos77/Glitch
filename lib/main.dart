@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'dart:html' as html; // ignore: avoid_web_libraries_in_flutter
 import 'core/providers/theme_provider.dart';
 import 'core/providers/navigation_provider.dart';
@@ -28,7 +29,14 @@ void main() async {
           ChangeNotifierProvider(create: (_) => ThemeProvider()),
           ChangeNotifierProvider(create: (_) => NavigationProvider()),
         ],
-        child: const GlitchApp(),
+        child: ScreenUtilInit(
+          designSize: const Size(360, 690),
+          minTextAdapt: true,
+          splitScreenMode: true,
+          builder: (context, child) {
+            return const GlitchApp();
+          },
+        ),
       ),
     ),
   );

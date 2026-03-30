@@ -3,13 +3,21 @@ import 'package:flutter/services.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:online_games/core/providers/navigation_provider.dart';
 import '../cubit/minesweeper_cubit.dart';
 import '../cubit/minesweeper_state.dart';
 import '../widgets/minesweeper_cell.dart';
 
 class MinesweeperPage extends StatefulWidget {
-  const MinesweeperPage({super.key});
+  final bool isMobile;
+  final GlobalKey<ScaffoldState> scaffoldKey;
+
+  const MinesweeperPage({
+    super.key,
+    required this.isMobile,
+    required this.scaffoldKey,
+  });
 
   @override
   State<MinesweeperPage> createState() => _MinesweeperPageState();
@@ -62,26 +70,32 @@ class _MinesweeperPageState extends State<MinesweeperPage> {
             appBar: AppBar(
               leading: IconButton(
                 icon: const Icon(Icons.menu),
-                onPressed: () => context.read<NavigationProvider>().toggleSidebar(),
+                onPressed: () {
+                  if (widget.isMobile) {
+                    widget.scaffoldKey.currentState?.openDrawer();
+                  } else {
+                    context.read<NavigationProvider>().toggleSidebar();
+                  }
+                },
               ),
               title: BlocBuilder<MinesweeperCubit, MinesweeperState>(
                 builder: (context, state) {
                   return Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Text('Minesweeper', style: TextStyle(fontSize: 18)),
+                      Text('Minesweeper', style: TextStyle(fontSize: 18.sp)),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Icon(Icons.timer, size: 14),
-                          const SizedBox(width: 4),
-                          Text(_formatTime(state.secondsElapsed), style: const TextStyle(fontSize: 12)),
+                          Icon(Icons.timer, size: 14.sp),
+                          SizedBox(width: 4.w),
+                          Text(_formatTime(state.secondsElapsed), style: TextStyle(fontSize: 12.sp)),
                           if (state.bestTime != null) ...[
-                            const SizedBox(width: 12),
-                            const Icon(Icons.emoji_events, size: 14, color: Colors.amber),
-                            const SizedBox(width: 4),
+                            SizedBox(width: 12.w),
+                            Icon(Icons.emoji_events, size: 14.sp, color: Colors.amber),
+                            SizedBox(width: 4.w),
                             Text('${'best'.tr()}: ${_formatTime(state.bestTime!)}',
-                                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                                style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.bold)),
                           ],
                         ],
                       ),
@@ -184,7 +198,7 @@ class _MinesweeperPageState extends State<MinesweeperPage> {
             ),
             body: Center(
               child: Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: EdgeInsets.all(12.w),
                 child: BlocBuilder<MinesweeperCubit, MinesweeperState>(
                   builder: (context, state) {
                     if (state is MinesweeperInitial || state is MinesweeperGameOver) {
@@ -196,10 +210,10 @@ class _MinesweeperPageState extends State<MinesweeperPage> {
                       return AspectRatio(
                         aspectRatio: cols / rows,
                         child: Container(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: EdgeInsets.all(4.w),
                           decoration: BoxDecoration(
                             color: isDark ? Theme.of(context).cardColor : Colors.grey[100],
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(12.r),
                             border: Border.all(
                               color: isDark ? Colors.white10 : Colors.black.withValues(alpha: 0.1),
                               width: 1,
@@ -215,8 +229,8 @@ class _MinesweeperPageState extends State<MinesweeperPage> {
                             physics: const NeverScrollableScrollPhysics(),
                             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: cols,
-                              crossAxisSpacing: 4,
-                              mainAxisSpacing: 4,
+                              crossAxisSpacing: 2.w,
+                              mainAxisSpacing: 2.w,
                             ),
                             itemCount: rows * cols,
                             itemBuilder: (context, index) {
@@ -258,18 +272,21 @@ class _MinesweeperPageState extends State<MinesweeperPage> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(label, style: const TextStyle(fontWeight: FontWeight.w600)),
-            Text(value.toString(), style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold)),
+            Text(label, style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14.sp)),
+            Text(value.toString(),
+                style: TextStyle(
+                    color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold, fontSize: 14.sp)),
           ],
         ),
         Slider(
           value: value.toDouble(),
           min: min.toDouble(),
           max: max.toDouble(),
+          activeColor: Theme.of(context).colorScheme.primary,
           divisions: max - min > 0 ? max - min : 1,
           onChanged: onChanged,
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
       ],
     );
   }
