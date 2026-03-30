@@ -1,0 +1,23 @@
+{
+  "app_name": "Glitch",
+  "search": "Search Games...",
+  "settings": "Settings",
+  "dark_mode": "Dark Mode",
+  "light_mode": "Light Mode",
+  "language": "Language",
+  "games": "Games",
+  "categories_title": "Game Categories",
+  "best": "Best Time",
+  "categories": {
+    "action": "Action",
+    "adventure": "Adventure",
+    "puzzle": "Puzzle",
+    "rpg": "RPG",
+    "strategy": "Strategy"
+  },
+  "featured_games": "Featured Games",
+  "play_now": "Play Now",
+  "popular": "Popular",
+  "new_releases": "New Releases",
+  "no_games_found": "No games found matching your search."
+}
