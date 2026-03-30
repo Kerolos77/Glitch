@@ -1,0 +1,23 @@
+{
+  "app_name": "جليتش",
+  "search": "البحث عن ألعاب...",
+  "settings": "الإعدادات",
+  "dark_mode": "الوضع المظلم",
+  "light_mode": "الوضع الفاتح",
+  "language": "اللغة",
+  "games": "الألعاب",
+  "categories_title": "أقسام الألعاب",
+  "best": "أفضل وقت",
+  "categories": {
+    "action": "أكشن",
+    "adventure": "مغامرات",
+    "puzzle": "ألغاز",
+    "rpg": "تقمص أدوار",
+    "strategy": "استراتيجية"
+  },
+  "featured_games": "الألعاب المميزة",
+  "play_now": "العب الآن",
+  "popular": "الأكثر شيوعاً",
+  "new_releases": "الإصدارات الجديدة",
+  "no_games_found": "لم يتم العثور على ألعاب تطابق بحثك."
+}
